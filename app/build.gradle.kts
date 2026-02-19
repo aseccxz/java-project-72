@@ -1,5 +1,9 @@
 plugins {
     id("java")
+    id("org.sonarqube") version "7.1.0.6387"
+    jacoco
+    id("com.github.ben-manes.versions") version "0.53.0"
+    checkstyle
 }
 
 group = "hexlet.code"
@@ -17,4 +21,16 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+sonar {
+    properties {
+        property("sonar.projectKey", "aseccxz_java-project-72")
+        property("sonar.organization", "aseccxz")
+    }
+}
+tasks.jacocoTestReport {
+    reports {
+        xml.required.set(true)
+    }
 }
