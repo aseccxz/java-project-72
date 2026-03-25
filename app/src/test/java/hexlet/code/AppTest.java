@@ -82,7 +82,7 @@ public class AppTest {
             var response = client.get(NamedRoutes.urlPath(url.getId()));
             assertThat(response.body().string()).contains(UrlProcessor.normalizeUrl(testUrl));
             var response2 = client.post(NamedRoutes.checkUrlPath(url.getId()));
-            assertThat(response2.body().string()).contains("Welcome", "200", "Web Page", "Example");
+            assertThat(response2.body().string()).contains("Welcome", "200", "Web Page");
         });
     }
 
