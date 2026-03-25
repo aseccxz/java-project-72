@@ -7,7 +7,7 @@ import java.util.Objects;
 
 @Getter
 @Setter
-public class Url {
+public final class Url {
     private Long id;
     private String name;
     private LocalDateTime createdAt;
