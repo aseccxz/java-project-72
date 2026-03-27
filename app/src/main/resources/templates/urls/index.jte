@@ -1,4 +1,5 @@
 @import hexlet.code.dto.urls.UrlsPage
+@import hexlet.code.util.NamedRoutes
 @import java.time.format.DateTimeFormatter
 @param UrlsPage page
 
@@ -23,7 +24,7 @@ content = @`
                     @for(var url: page.getUrls())
                         <tr>
                             <td>
-                                ${url.getId()}
+                                <a href="${NamedRoutes.urlPath(url.getId())}">${url.getName()}</a>
                             </td>
                             <td>
                                 ${url.getName()}
