@@ -24,10 +24,10 @@ content = @`
                     @for(var url: page.getUrls())
                         <tr>
                             <td>
-                                <a href="${NamedRoutes.urlPath(url.getId())}">${url.getName()}</a>
+                                ${url.getId()}
                             </td>
                             <td>
-                                ${url.getName()}
+                                <a href="${NamedRoutes.urlPath(url.getId())}">${url.getName()}</a>
                             </td>
                             @if(page.getLatestChecks().get(url.getId()) != null)
                                 <td>
