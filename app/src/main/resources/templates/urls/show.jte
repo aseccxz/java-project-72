@@ -50,7 +50,6 @@ content = @`
                             <tr>
                                 <td>
                                     ${urlCheck.getId()}
-
                                 </td>
                                 <td>
                                     ${urlCheck.getStatusCode()}
