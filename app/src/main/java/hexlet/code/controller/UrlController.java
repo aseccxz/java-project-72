@@ -100,7 +100,7 @@ public class UrlController {
             ctx.sessionAttribute("flashType", "success");
 
         } catch (Exception e) {
-            ctx.sessionAttribute("flash", "Произошла ошибка при проверке " + e.getMessage());
+            ctx.sessionAttribute("flash", "Произошла ошибка при проверке");
             ctx.sessionAttribute("flashType", "fail");
         }
         ctx.redirect(NamedRoutes.urlPath(id));
