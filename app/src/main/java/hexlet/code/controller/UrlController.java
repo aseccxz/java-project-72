@@ -75,18 +75,18 @@ public class UrlController {
             HttpResponse<String> response = Unirest.get(url.getName()).asString();
             var statusCode = response.getStatus();
 
-            char firstDigit = String.valueOf(statusCode).charAt(0);
-            if (firstDigit == '4' || firstDigit == '5') {
+            if (statusCode >= 400 && statusCode <= 599) {
                 throw new Exception("Bad status code");
             }
 
             var responseBody = Jsoup.parse(response.getBody());
             var title = responseBody.title();
+
             var element = responseBody.selectFirst("h1");
-            var h1 = element == null ? "" : element.ownText();
+            var h1 = element == null ? "" : element.text();
 
             element = responseBody.selectFirst("meta[name=description]");
-            var description = element == null ? "" : element.ownText();
+            var description = element == null ? "" : element.attr("content");
 
             var urlCheck = new UrlCheck(statusCode, title, h1, description);
             urlCheck.setUrlId(url.getId());
