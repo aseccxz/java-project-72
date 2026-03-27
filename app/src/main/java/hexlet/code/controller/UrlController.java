@@ -9,6 +9,7 @@ import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlsRepository;
 import hexlet.code.util.NamedRoutes;
 import hexlet.code.util.UrlProcessor;
+import hexlet.code.util.Util;
 import io.javalin.http.Context;
 import io.javalin.http.NotFoundResponse;
 import kong.unirest.HttpResponse;
@@ -87,6 +88,10 @@ public class UrlController {
 
             element = responseBody.selectFirst("meta[name=description]");
             var description = element == null ? "" : element.attr("content");
+
+            h1 = Util.textCutter(h1);
+            title = Util.textCutter(title);
+            description = Util.textCutter(description);
 
             var urlCheck = new UrlCheck(statusCode, title, h1, description);
             urlCheck.setUrlId(url.getId());
