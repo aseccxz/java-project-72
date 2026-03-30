@@ -6,7 +6,6 @@ import hexlet.code.repository.UrlsRepository;
 import hexlet.code.util.NamedRoutes;
 import hexlet.code.util.UrlProcessor;
 import io.javalin.Javalin;
-import io.javalin.http.NotFoundResponse;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import io.javalin.testtools.JavalinTest;
