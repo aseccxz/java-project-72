@@ -1,10 +1,12 @@
 package hexlet.code;
 
 import hexlet.code.model.Url;
+import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlsRepository;
 import hexlet.code.util.NamedRoutes;
 import hexlet.code.util.UrlProcessor;
 import io.javalin.Javalin;
+import io.javalin.http.NotFoundResponse;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import io.javalin.testtools.JavalinTest;
@@ -82,7 +84,11 @@ public class AppTest {
             var response = client.get(NamedRoutes.urlPath(url.getId()));
             assertThat(response.body().string()).contains(UrlProcessor.normalizeUrl(testUrl));
             var response2 = client.post(NamedRoutes.checkUrlPath(url.getId()));
-            assertThat(response2.body().string()).contains("Welcome", "200", "Web Page");
+            assertThat(response2.body().string()).contains("Welcome", "200", "Web Page", "Example");
+            var sqlData = UrlCheckRepository.getChecksById(url.getId()).getFirst();
+            assertThat(sqlData.getH1()).isEqualTo("Welcome");
+            assertThat(sqlData.getTitle()).isEqualTo("Web Page");
+            assertThat(sqlData.getDescription()).isEqualTo("Example");
         });
     }
 

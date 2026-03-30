@@ -28,27 +28,36 @@ public class UrlController {
 
     public static void create(Context ctx) throws SQLException {
         String name = ctx.formParamAsClass("url", String.class).get();
+        String domain;
         try {
-            String domain = UrlProcessor.normalizeUrl(name);
-            Url url = new Url(domain);
-            var presentUrl = UrlsRepository.findUrl(url);
-            if (presentUrl.isPresent()) {
-                url = presentUrl.get();
-                ctx.sessionAttribute("flash", "Страница уже существует");
-                ctx.sessionAttribute("flashType", "fail");
-            } else {
-                UrlsRepository.save(url);
-                ctx.sessionAttribute("flash", "Страница успешно добавлена");
-                ctx.sessionAttribute("flashType", "success");
-            }
-            ctx.redirect(NamedRoutes.urlPath(url.getId()));
+            domain = UrlProcessor.normalizeUrl(name);
 
         } catch (Exception e) {
             var page = new BuildUrlPage(name);
             page.setFlash(e.getMessage());
             page.setFlashType("fail");
             ctx.render("index.jte", model("page", page)).status(422);
+            return;
         }
+        Url url = new Url(domain);
+        var resultUrl = UrlsRepository.findUrl(url)
+                .map(existing -> {
+                    ctx.sessionAttribute("flash", "Страница уже существует");
+                    ctx.sessionAttribute("flashType", "fail");
+                    return existing;
+                })
+                .orElseGet(() -> {
+                    try {
+                        UrlsRepository.save(url);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    ctx.sessionAttribute("flash", "Страница успешно добавлена");
+                    ctx.sessionAttribute("flashType", "success");
+                    return url;
+                });
+
+        ctx.redirect(NamedRoutes.urlPath(resultUrl.getId()));
     }
     public static void index(Context ctx) throws SQLException {
         var urls = UrlsRepository.getEntities();
