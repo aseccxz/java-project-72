@@ -100,5 +100,19 @@ public class AppTest {
             assertThat(sqlData.getName()).isEqualTo("https://example.com");
         });
     }
+    @Test
+    void testUrlNotAdded() {
+        JavalinTest.test(app, (server, client) -> {
+            var requestBody = "url=https://example.com";
+            var response = client.post(NamedRoutes.urlsPath(), requestBody);
+            assertThat(response.code()).isEqualTo(200);
+            var response2 = client.post(NamedRoutes.urlsPath(), requestBody);
+            assertThat(response2.body().string()).contains("https://example.com");
+
+            var requestBody2 = "url=httpsrtt://examgdfgdfgple.comsdfdsfds";
+            var response3 = client.post(NamedRoutes.urlsPath(), requestBody2);
+            assertThat(response3.code()).isEqualTo(422);
+        });
+    }
 
 }

@@ -7,7 +7,6 @@
 @template.layout.page(
 page = page,
 content = @`
-    <main class="flex-grow-1">
         <section>
             <div class="container-lg mt-5">
                 <h1>Сайты</h1>
@@ -48,6 +47,5 @@ content = @`
                 </table>
             </div>
         </section>
-    </main>
 `
 )
