@@ -6,6 +6,8 @@ import hexlet.code.repository.UrlsRepository;
 import hexlet.code.util.NamedRoutes;
 import hexlet.code.util.UrlProcessor;
 import io.javalin.Javalin;
+import okhttp3.FormBody;
+import okhttp3.Request;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import io.javalin.testtools.JavalinTest;
@@ -88,6 +90,16 @@ public class AppTest {
             assertThat(sqlData.getH1()).isEqualTo("Welcome");
             assertThat(sqlData.getTitle()).isEqualTo("Web Page");
             assertThat(sqlData.getDescription()).isEqualTo("Example");
+        });
+    }
+    @Test
+    void testUrlCreation() {
+        JavalinTest.test(app, (server, client) -> {
+            var requestBody = "url=https://example.com";
+            var response = client.post(NamedRoutes.urlsPath(), requestBody);
+            assertThat(response.body().string()).contains("https://example.com");
+            var sqlData = UrlsRepository.getEntities().getFirst();
+            assertThat(sqlData.getName()).isEqualTo("https://example.com");
         });
     }
 
