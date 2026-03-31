@@ -88,6 +88,12 @@ public class AppTest {
             assertThat(sqlData.getH1()).isEqualTo("Welcome");
             assertThat(sqlData.getTitle()).isEqualTo("Web Page");
             assertThat(sqlData.getDescription()).isEqualTo("Example");
+
+            var sqlData2 = UrlCheckRepository.getLatestChecks();
+            var check = sqlData2.get(url.getId());
+            var resresponse3 = client.get(NamedRoutes.urlsPath());
+            assertThat(resresponse3.body().string()).contains(String.valueOf(check.getStatusCode()));
+
         });
     }
     @Test
