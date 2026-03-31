@@ -5,6 +5,7 @@ import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlsRepository;
 import hexlet.code.util.NamedRoutes;
 import hexlet.code.util.UrlProcessor;
+import hexlet.code.util.Util;
 import io.javalin.Javalin;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -91,11 +92,12 @@ public class AppTest {
 
             var sqlData2 = UrlCheckRepository.getLatestChecks();
             var check = sqlData2.get(url.getId());
-            var resresponse3 = client.get(NamedRoutes.urlsPath());
-            assertThat(resresponse3.body().string()).contains(String.valueOf(check.getStatusCode()));
+            var response4 = client.get(NamedRoutes.urlsPath());
+            assertThat(response4.body().string()).contains(String.valueOf(check.getStatusCode()));
 
         });
     }
+
     @Test
     void testUrlCreation() {
         JavalinTest.test(app, (server, client) -> {
@@ -120,5 +122,9 @@ public class AppTest {
             assertThat(response3.code()).isEqualTo(422);
         });
     }
-
+    @Test
+    void testLongNamesCut() {
+        String testString = "1".repeat(202);
+        assertThat(Util.textCutter(testString)).isEqualTo("1".repeat(200) + "...");
+    }
 }
