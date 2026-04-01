@@ -89,9 +89,13 @@ public class AppTest {
             assertThat(sqlData.getH1()).isEqualTo("Welcome");
             assertThat(sqlData.getTitle()).isEqualTo("Web Page");
             assertThat(sqlData.getDescription()).isEqualTo("Example");
+            mockWebServer.shutdown();
+            var response3 = client.post(NamedRoutes.checkUrlPath(url.getId()));
+            var sqlData2 = UrlCheckRepository.getChecksById(url.getId());
+            assertThat(sqlData2.size()).isEqualTo(1);
 
-            var sqlData2 = UrlCheckRepository.getLatestChecks();
-            var check = sqlData2.get(url.getId());
+            var sqlData3 = UrlCheckRepository.getLatestChecks();
+            var check = sqlData3.get(url.getId());
             var response4 = client.get(NamedRoutes.urlsPath());
             assertThat(response4.body().string()).contains(String.valueOf(check.getStatusCode()));
 
