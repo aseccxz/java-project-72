@@ -28,9 +28,9 @@ dependencies {
     implementation("io.javalin:javalin-bundle:6.7.0")
     implementation("com.zaxxer:HikariCP:7.0.2")
     implementation("com.h2database:h2:2.4.240")
+    implementation("org.postgresql:postgresql:42.7.1")
     implementation("com.konghq:unirest-java:3.14.5")
     implementation("org.jsoup:jsoup:1.22.1")
-    implementation("org.postgresql:postgresql:42.7.1")
 }
 
 tasks.test {
