@@ -32,7 +32,7 @@ public class UrlsRepository extends BaseRepository {
         }
     }
 
-    public static Optional<Url> find(Long id) throws SQLException {
+    public static Optional<Url> findById(Long id) throws SQLException {
         var sql = "SELECT * FROM urls WHERE id = ?";
         try (var conn = dataSource.getConnection();
              var stmt = conn.prepareStatement(sql)) {
@@ -69,9 +69,19 @@ public class UrlsRepository extends BaseRepository {
             return result;
         }
     }
-    public static Optional<Url> findUrl(Url url) throws SQLException {
+    public static Optional<Url> findByName(String name) throws SQLException {
         return getEntities().stream()
-                .filter(e -> e.equals(url))
+                .filter(e -> e.getName().equals(name))
                 .findAny();
+    }
+
+    public static boolean isPrecent(String urlName) throws SQLException {
+        var sql = "SELECT * FROM urls WHERE name = ?";
+        try (var conn = dataSource.getConnection();
+             var stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, urlName);
+            var result = stmt.executeQuery();
+            return result.next();
+        }
     }
 }

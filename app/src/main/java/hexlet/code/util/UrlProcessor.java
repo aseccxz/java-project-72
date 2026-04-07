@@ -6,13 +6,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 public class UrlProcessor {
-    public static String normalizeUrl(String urlString) throws Exception {
-        URL url = null;
-        try {
-            url = new URI(urlString).toURL();
-        } catch (MalformedURLException | URISyntaxException | IllegalArgumentException e) {
-            throw new Exception("Некорректный URL");
-        }
+    public static String normalizeUrl(String urlString) throws URISyntaxException, MalformedURLException {
+        URL url = new URI(urlString).toURL();
         String port = url.getPort() == -1 ? "" : ":" + url.getPort();
         return String.format("%s://%s%s", url.getProtocol(), url.getHost(), port);
     }

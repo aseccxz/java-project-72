@@ -15,6 +15,9 @@ import io.javalin.http.NotFoundResponse;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import org.jsoup.Jsoup;
+
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 import static io.javalin.rendering.template.TemplateUtil.model;
 
@@ -32,32 +35,25 @@ public class UrlController {
         try {
             domain = UrlProcessor.normalizeUrl(name);
 
-        } catch (Exception e) {
+        } catch (MalformedURLException | URISyntaxException | IllegalArgumentException e) {
             var page = new BuildUrlPage(name);
-            page.setFlash(e.getMessage());
+            page.setFlash("Некорректный URL");
             page.setFlashType("fail");
             ctx.render("index.jte", model("page", page)).status(422);
             return;
         }
-        Url url = new Url(domain);
-        var resultUrl = UrlsRepository.findUrl(url)
-                .map(existing -> {
-                    ctx.sessionAttribute("flash", "Страница уже существует");
-                    ctx.sessionAttribute("flashType", "fail");
-                    return existing;
-                })
-                .orElseGet(() -> {
-                    try {
-                        UrlsRepository.save(url);
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
-                    ctx.sessionAttribute("flash", "Страница успешно добавлена");
-                    ctx.sessionAttribute("flashType", "success");
-                    return url;
-                });
 
-        ctx.redirect(NamedRoutes.urlPath(resultUrl.getId()));
+        if (UrlsRepository.isPrecent(domain)) {
+            ctx.sessionAttribute("flash", "Страница уже существует");
+            ctx.sessionAttribute("flashType", "fail");
+        } else {
+            UrlsRepository.save(new Url(domain));
+            ctx.sessionAttribute("flash", "Страница успешно добавлена");
+            ctx.sessionAttribute("flashType", "success");
+        }
+        Url url = UrlsRepository.findByName(domain)
+                .orElseThrow(() -> new NotFoundResponse("Entity with name = " + domain + " not found"));
+        ctx.redirect(NamedRoutes.urlPath(url.getId()));
     }
     public static void index(Context ctx) throws SQLException {
         var urls = UrlsRepository.getEntities();
@@ -69,7 +65,7 @@ public class UrlController {
 
     public static void show(Context ctx) throws SQLException {
         var id = ctx.pathParamAsClass("id", Long.class).get();
-        var url = UrlsRepository.find(id)
+        var url = UrlsRepository.findById(id)
                 .orElseThrow(() -> new NotFoundResponse("Страница не найдена"));
         var urlChecks = UrlCheckRepository.getChecksById(id);
         var urlPage = new UrlPage(url, urlChecks);
@@ -79,7 +75,7 @@ public class UrlController {
     }
     public static void check(Context ctx) throws SQLException {
         var id = ctx.pathParamAsClass("id", Long.class).get();
-        var url = UrlsRepository.find(id)
+        var url = UrlsRepository.findById(id)
                 .orElseThrow(() -> new NotFoundResponse("Url not found"));
         try {
             HttpResponse<String> response = Unirest.get(url.getName()).asString();

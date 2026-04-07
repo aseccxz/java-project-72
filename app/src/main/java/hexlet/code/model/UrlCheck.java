@@ -3,12 +3,14 @@ package hexlet.code.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class UrlCheck {
     private Long id;
     private int statusCode;
@@ -23,9 +25,5 @@ public class UrlCheck {
         this.title = title;
         this.h1 = h1;
         this.description = description;
-    }
-
-    public UrlCheck(int statusCode) {
-        this.statusCode = statusCode;
     }
 }
